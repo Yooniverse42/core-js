@@ -10,15 +10,30 @@ const h = (t) => (t.style.height = 0);
 // 이 밑엔 왜 적은거임? 물어보삼
 // depthList.forEach(h)
 
+/* global gsap */
+
 aList.forEach((a) => {
-  a.addEventListener('mouseenter', () => {
-    const target = a.lastElementChild;
 
-    // 내가 선택한 depth를 제외한 항목 0이 아닌 모든 depth 높이를 0 만드는게 쉬움
-    depthList.forEach(h);
+  const target = a.lastElementChild;
+  const tl = gsap.timeline({paused:true}).to(target,{height:100, ease:'power3.inOut'})
 
-    target.style.height = '100px';
-  });
+  a.addEventListener('mouseenter', () => tl.play())
+  a.addEventListener('mouseleave', () => tl.reverse())
+
+
+  // a.addEventListener('mouseenter', () => {
+  //   const target = a.lastElementChild;
+
+  //   // 내가 선택한 depth를 제외한 항목 0이 아닌 모든 depth 높이를 0 만드는게 쉬움
+  //   depthList.forEach(h);
+
+  //   target.style.height = '100px';
+  // });
 });
 
 header.addEventListener('mouseleave', () => depthList.forEach(h));
+
+
+
+
+
