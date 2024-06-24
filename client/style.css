@@ -1,9 +1,9 @@
-h1 {
-  /* height: 100vh;
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: center;
-  align-items: center; */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* h1 {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -12,14 +12,14 @@ h1 {
 
 .first{}
 
-.second{}
+.second{} */
 
 span {
-  display: inline-block;
+  /* display: inline-block; */
 }
 
 
-ul{
+/* ul{
   list-style: none;
   padding: 1rem;
   display: flex;
@@ -47,3 +47,76 @@ ul{
   }
   
 }
+
+
+.ground{
+  width: 400px;
+  height: 300px;
+  border: 5px solid black;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  background-color: #66cd7b;
+}
+
+#ball {
+  transition: all .2s;
+  pointer-events: none;
+}
+
+.ground::after,
+.ground::before{
+  content: '';
+  width:30px;
+  height:50px;
+  background-color: rgba(128, 128, 128, 0.408);
+  position: absolute;
+  top: 50%;
+  transform:translateY(-50%);
+}
+
+.ground::after{
+  left:0;
+}
+
+.ground::before{
+  right:0;
+}
+
+
+.emotion{
+  font-size: 2rem;
+  position: absolute;
+  pointer-events: none;
+} */
+
+
+/* 08.bubble.js */
+section{
+  background-color: orange;
+  padding: 1rem;
+}
+
+article{
+  background-color:  hotpink;
+  padding: 1rem;
+}
+
+p{
+  background-color: dodgerblue;
+  padding: 1rem;
+}
+
+
+/* 09.delegation.js */
+nav ul{
+  display: flex;
+  gap:2rem;
+  list-style: none;
+
+  li{
+    padding:1rem;
+  }
+}
+
