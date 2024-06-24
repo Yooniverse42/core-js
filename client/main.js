@@ -1,6 +1,7 @@
 
-
-
+// named export
+// defualt export 무조건 1개
+//  - rename, alias가 필요할 때
 
 import { 
   attr, 
@@ -9,9 +10,7 @@ import {
   clearContents, 
 } from "./lib/index.js";
 
-
-
-console.log( attr );
+import a from "./lib/dom/clearContents.js";
 
 function phase1(){
   // 1. input value 값 가져오기 (first,second)
@@ -54,9 +53,6 @@ function phase1(){
   clear.addEventListener('click',handleClear);
 
 }
-
-
-phase1()
 
 
 
