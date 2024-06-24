@@ -1,92 +1,35 @@
-
-// named export
-// defualt export 무조건 1개
-//  - rename, alias가 필요할 때
-
-import { 
-  attr, 
-  getNode, 
-  insertLast,
-  clearContents, 
-} from "./lib/index.js";
-
-import a from "./lib/dom/clearContents.js";
-
-function phase1(){
-  // 1. input value 값 가져오기 (first,second)
-  //    - input 선택하기 
-  //    - input에게 input 이벤트를 걸어준다.
-  //    - input.value 값을 가져온다.
-
-  // 2. 숫자 더하기
-  //    - 숫자 형변환 
-
-  // 3. result 내용 비우기
-  //    - clearContents
-
-  const first = getNode('#firstNumber');
-  const second = getNode('#secondNumber');
-  const result = getNode('.result');
-  const clear = getNode('#clear');
+import data from "./data/data.js";
+import {getNode, getRandom, insertLast, clearContents} from './lib/index.js'
 
 
-  function handleInput(){
-    const firstValue = Number(first.value);
-    const secondValue = +second.value;
-    const total = firstValue + secondValue;
+// [phase-1]
+// 1. 주접 떨기 버튼을 클릭하는 함수
+//   - 주접 떨기 버튼 가져오기
+//   - 이벤트 연결하기 addEventListener('click')
 
-    clearContents(result)
-    
-    insertLast(result,total);
-  }
+// 2. input 값 가져오기
+//   - input.value
 
-  function handleClear(e){
-    e.preventDefault();
-    
-    clearContents(first);
-    clearContents(second);
-    result.textContent = '-';
-  }
+// 3. data함수에서 주접 1개 꺼내기
 
-  first.addEventListener('input',handleInput);
-  second.addEventListener('input',handleInput);
-  clear.addEventListener('click',handleClear);
 
+const submit = getNode('#submit');
+const nameField = getNode('#nameField');
+const result = getNode('.result');
+
+function handleSubmit(e) {
+  e.preventDefault();
+
+  const name = nameField.value;
+  const list = data(name);
+  const pick = list[getRandom(list.length)]
+
+  clearContents(result)
+  insertLast(result, pick)
 }
 
+submit.addEventListener('click', handleSubmit)
 
 
 
 
-function phase2(){
-  const calculator = getNode('.calculator');
-  const result = getNode('.result');
-  const clear = getNode('#clear');
-  const numberInputs = [...document.querySelectorAll('input:not(#clear)')]
-  
-  
-  
-  function handleInput(){
-  
-    const total = numberInputs.reduce((acc,cur)=> acc + Number(cur.value),0)
-    
-    clearContents(result);
-    insertLast(result,total);
-  }
-  
-  
-  
-  
-  
-  function handleClear(e){
-    e.preventDefault();
-    numberInputs.forEach(clearContents);
-    result.textContent = '-';
-  }
-  
-  
-  
-  calculator.addEventListener('input',handleInput);
-  clear.addEventListener('click',handleClear);
-  
-}
