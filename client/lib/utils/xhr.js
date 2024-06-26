@@ -1,64 +1,3 @@
-
-// 통신 사이트~?
-const ENDPOINT = 'https://jsonplaceholder.typicode.com/users';
-
-/*
-xhr은 [readyState] 라는 5단계의 상태를 가짐
-0 : uninitialized
-1 : loading
-2 : loaded
-3 : ineractive
-4 : complete
-*/
-
-const user = {
-  name: 'yooni',
-  age: 20,
-  gender: 'female'
-}
-
-function xhr(method,url,body, 성공, 실패){
-
-  const xhr = new XMLHttpRequest();
-
-  xhr.open(method,url);
-
-  xhr.setRequestHeader('Content-Type','application/json');
-
-  xhr.addEventListener('readystatechange',()=>{
-
-    const {readyState,status,response} = xhr;
-    
-    if(readyState === 4){ 
-      if(status >= 200 && status < 400){
-        // console.log(response);
-        // 이렇게 하면 문자열로 나옴
-        // 그래서 Parse로 받아야 함!
-        // console.log(JSON.parse(response));
-        
-        // 콘솔을 찍는게 문제가 아니니까 얘를 data라는 변수에 담아보자.
-        const data = JSON.parse(response);
-
-        // 그리고 콜백함수에 담아보자
-        성공(data);
-      }
-      else{
-        실패() // ? 맞나?
-        console.log('실패!');
-      }
-    }
-  })
-
-  xhr.send(JSON.stringify(body))
-}
-
-// 어떤 통신을 할건지, 어디에 통신할건지, 어떤 데이터를 넣을건지
-// xhr('POST', ENDPOINT, user)
-// xhr('GET', ENDPOINT)
-
-
-
-/*
 const ENDPOINT = 'https://jsonplaceholder.typicode.com/users';
 
 //  [readyState]
@@ -74,7 +13,10 @@ const user = {
   gender: 'male',
 };
 
-// 객체 합성
+
+/* -------------------------------------------- */
+/*               xhr callback 방식               */
+/* -------------------------------------------- */
 
 function xhr({
   method = 'GET',
@@ -103,7 +45,7 @@ function xhr({
       if (status >= 200 && status < 400) {
         const data = JSON.parse(response);
 
-        성공(data); // ???
+        성공(data);
       } else {
         실패('실패!');
       }
@@ -114,27 +56,144 @@ function xhr({
 }
 
 // 1. 무조건 매개변수 순서에 맞게 작성 ✅
-// 2. 매개변수 안쓰면?
+// 2. 매개변수 안쓰면? ✅
 
-xhr({
-  성공(data) {
-    console.log(data);
+// xhr({
+//   성공(data) {
+//     console.log(data);
+//   },
+//   실패() {},
+//   url: ENDPOINT,
+// });
+
+
+
+/*
+xhr.get = (url,성공,실패) =>{
+  xhr({ url, 성공, 실패 })
+}
+
+
+xhr.post = (url,body,성공,실패) =>{
+  xhr({ 
+    method:'POST',
+    body,
+    url, 
+    성공, 
+    실패
+  })
+}
+
+
+xhr.put = (url,body,성공,실패) =>{
+  xhr({ 
+    method:'PUT',
+    body,
+    url, 
+    성공, 
+    실패
+  })
+}
+
+
+xhr.delete = (url,성공,실패) =>{
+  xhr({ 
+    method:'DELETE',
+    url, 
+    성공, 
+    실패
+  })
+}
+
+
+xhr.post(
+  ENDPOINT,
+  (data)=>{
+    console.log( data );
   },
-  body: user,
-  실패() {},
-  url: ENDPOINT,
-});
-
-const options = {
-  method: 'POST',
-  url: ENDPOINT,
-  body: user,
-  성공() {},
-  실패() {},
-};
-
-'POST', ENDPOINT, user, (data) => console.log(data), (err) => console.log(err);
+  (err)=>{
+    console.log( err );
+  }
+)
 */
+
+
+
+
+/* -------------------------------------------- */
+/*               xhr Promise 방식               */
+/* -------------------------------------------- */
+
+
+
+const defaultOptions = {
+  method:'GET',
+  url: '',
+  body: null,
+  errorMessage:'서버와의 통신이 원활하지 않습니다.',
+  headers:{
+    'Content-Type':'application/json',
+    'Access-Control-Allow-Origin': '*'
+  }
+}
+
+
+export function xhrPromise(options){
+
+  const {method, url, body, headers, errorMessage} = {
+    ...defaultOptions, 
+    ...options, 
+    headers:{
+      ...defaultOptions.headers, 
+      ...options.headers
+    } // 중첩됐으므로 깊은 복사하기 위해서 header만 한 번더 한거임!
+  }
+
+  // const {method,url,body,headers, errorMessage} = options;
+
+  const xhr = new XMLHttpRequest();
+
+  xhr.open(method,url);
+
+  Object.entries(headers).forEach(([key,value])=>{
+    xhr.setRequestHeader(key,value);
+  })
+
+  xhr.send(JSON.stringify(body));
+
+  return new Promise((resolve, reject) => {
+    
+    xhr.addEventListener('readystatechange',()=>{
+      if(xhr.readyState === 4){
+        if(xhr.status >= 200 && xhr.status < 400){
+          resolve(JSON.parse(xhr.response));
+        }
+        else{
+          reject({message:errorMessage});
+        }
+      }
+    })
+  })
+}
+
+
+
+xhrPromise.get = url => {
+  return xhrPromise({url})
+}
+
+xhrPromise.post = (url, body) => {
+  return xhrPromise({url, body, method: 'POST'})
+}
+
+xhrPromise.put = (url,body) => {
+  return xhrPromise({url, body, method:'PUT'})
+}
+
+xhrPromise.delete = (url) => {
+  return xhrPromise({url, method:'DELETE'})
+}
+
 
 
 
