@@ -104,7 +104,7 @@ const defaultOptions = {
 }
 
 
-function delayP(options) {
+export function delayP(options) {
 
   let config = {...defaultOptions};
 
@@ -194,7 +194,7 @@ async function 라면끓이기(){
 // 라면끓이기()
 
 
-
+// 포켓몬
 async function getData() {
   const data = await xhrPromise.get('https://pokeapi.co/api/v2/pokemon/573')
 
@@ -203,7 +203,7 @@ async function getData() {
   insertLast(document.body,`<img src="${data.sprites.other.showdown['front_default']}" alt="" />`)
 }
 
-getData()
+// getData()
 
 
 
