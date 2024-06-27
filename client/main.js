@@ -1,19 +1,27 @@
 /* global gsap */
 
+
 import { 
   tiger,
   delayP,
   getNode,
   changeColor,
+  clearContents,
   renderSpinner,
   renderUserCard,
   renderEmptyCard,
-} from "./lib/index.js";
+ } from "./lib/index.js";
 
 
-const ENDPOINT = 'https://jsonplaceholder.typicode.com/users'
+
+
+const ENDPOINT = 'http://localhost:3000/users'
+
+
+
 // 1. user 데이터 fetch 해주세요.
 //    - tiger.get
+
 
 // 2. fetch 데이터의 유저 이름만 콘솔 출력
 //     - 데이터 유형 파악  ex) 객체,배열,숫자,문자
@@ -21,14 +29,14 @@ const ENDPOINT = 'https://jsonplaceholder.typicode.com/users'
 
 // 3. 유저 이름 화면에 렌더링 
 
-
 const userCardInner = getNode('.user-card-inner');
 
 async function renderUserList(){
 
+
   // 로딩 스피너 렌더링
   renderSpinner(userCardInner)
-
+ 
   // await delayP(2000);
   
 
@@ -70,7 +78,6 @@ renderUserList()
 
 
 
-// 삭제 버튼
 function handleDeleteCard(e){
   const button = e.target.closest('button');
 
@@ -80,8 +87,70 @@ function handleDeleteCard(e){
   const index = article.dataset.index.slice(5);
 
   tiger.delete(`${ENDPOINT}/${index}`)
-  
+  .then(()=>{
+    
+    // 요청 보내고 렌더링하기
+    clearContents(userCardInner)
+    renderUserList()
+
+  })
 }
 
 
 userCardInner.addEventListener('click',handleDeleteCard)
+
+
+
+
+
+const createButton = getNode('.create');
+const cancelButton = getNode('.cancel');
+const doneButton = getNode('.done');
+
+
+
+
+function handleCreate(){
+  gsap.to('.pop',{autoAlpha:1})  
+  // createButton.classList.add('open') 
+}
+
+
+function handleCancel(e){
+  e.stopPropagation();
+  gsap.to('.pop',{autoAlpha:0})
+  // createButton.classList.remove('open');
+}
+
+function handleDone(e){
+  e.preventDefault();
+  // 태그의 기본 동작을 차단 시킴 
+  // 버튼이 submit으로 만들어서 새로고침 하는 것을 막기 위함임.
+  // 왜냐하면 우리는 통신과 응답해야 하니까~?
+  
+  const name = getNode('#nameField').value;
+  const email = getNode('#emailField').value;
+  const website = getNode('#siteField').value;
+
+
+  tiger.post(ENDPOINT,{ name, email, website })
+  .then(()=>{
+    // 1. 팝업 닫기
+    gsap.to('.pop',{autoAlpha:0})
+    // createButton.classList.remove('open');
+
+    // 2. 카드 컨텐츠 비우기 
+    clearContents(userCardInner);
+
+    // 3. 유저카드 렌더링하기
+    renderUserList();
+  })
+
+
+}
+
+
+
+createButton.addEventListener('click',handleCreate)
+cancelButton.addEventListener('click',handleCancel)
+doneButton.addEventListener('click',handleDone)
